@@ -1,0 +1,20 @@
+#!/bin/bash
+
+
+curl -X GET "https://api.chartmogul.com/v1/metrics/mrr" \ -u 42ce9415d69ec02f275c13f59a09d864:5a8b880eb95a07a2a4f87f089d72671b \ -d start-date=2019-01-01 \ -d end-date=2019-04-30 \ -d interval=month > monthlymmr.json
+jq '[.doc[] | {mrr}]  | sort_by(.date)'  monthlymmr.json
+
+mrrarray=( $(jq -r '.' monthlymmr.json) )
+
+declare -a array=("January" "February" "March" "April")
+
+# get length of an array
+arraylength=${#array[@]}
+
+echo "Total MRR for Q1 2019:"
+
+# use for loop to read all values and indexes
+for (( i=1; i<${arraylength}+1; i++ ));
+do
+  echo " / " ${array[$i-1]} " : " ${mrrarray[$i-1]}
+done
